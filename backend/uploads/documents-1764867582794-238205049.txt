@@ -1,0 +1,190 @@
+AGENTIC SITE API DOCUMENTATION
+================================
+
+OVERVIEW
+--------
+This document contains comprehensive information about the Agentic Site backend APIs.
+Built with Express.js, MongoDB (via Mongoose), and JWT authentication.
+
+SETUP REQUIREMENTS
+------------------
+- Node.js installed
+- MongoDB running locally or remote connection
+- Dependencies: express, mongoose, bcryptjs, jsonwebtoken, cors, dotenv
+
+Environment Variables (.env file):
+- MONGO_URI=mongodb://localhost:27017/agentic-site
+- JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+- PORT=5000
+
+Starting the Server:
+1. cd backend
+2. npm install
+3. npm start
+4. Server runs on http://localhost:5000
+
+USER SCHEMA
+-----------
+The User model includes the following fields:
+- name: String (required, trimmed)
+- email: String (required, unique, lowercase, trimmed)
+- username: String (required, unique, trimmed)
+- number: String (optional, trimmed)
+- password: String (required, hashed, min 6 characters)
+- createdAt: Date (auto-generated timestamp)
+- updatedAt: Date (auto-generated timestamp)
+
+Passwords are automatically hashed using bcrypt before saving.
+
+API ENDPOINTS
+=============
+
+1. SIGNUP
+---------
+URL: POST /api/auth/signup
+Description: Create a new user account
+
+Request Headers:
+- Content-Type: application/json
+
+Request Body (JSON):
+{
+  "name": "Sanskruti",
+  "email": "sanskruti@example.com",
+  "username": "sankii30",
+  "number": "1234567890",  // optional
+  "password": "Om101105"
+}
+
+Success Response (201):
+{
+  "message": "User created successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Sanskruti",
+    "email": "sanskruti@example.com",
+    "username": "sankii30",
+    "number": "1234567890"
+  }
+}
+
+Error Responses:
+- 400: User already exists with this email or username
+- 500: Server error
+
+2. LOGIN
+--------
+URL: POST /api/auth/login
+Description: Authenticate user with username or email
+
+Request Headers:
+- Content-Type: application/json
+
+Request Body (JSON):
+{
+  "identifier": "sankii30",  // or email: "sanskruti@example.com"
+  "password": "Om101105"
+}
+
+Success Response (200):
+{
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Sanskruti",
+    "email": "sanskruti@example.com",
+    "username": "sankii30",
+    "number": "1234567890"
+  }
+}
+
+Error Responses:
+- 400: Invalid credentials
+- 500: Server error
+
+3. GET PROFILE
+--------------
+URL: GET /api/auth/profile
+Description: Retrieve authenticated user's profile information
+
+Request Headers:
+- Authorization: Bearer <jwt-token>
+
+Request Body: None
+
+Success Response (200):
+{
+  "user": {
+    "id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Sanskruti",
+    "email": "sanskruti@example.com",
+    "username": "sankii30",
+    "number": "1234567890",
+    "createdAt": "2025-12-04T10:30:00.000Z"
+  }
+}
+
+Error Responses:
+- 401: No token provided / Invalid token / User not found
+- 500: Server error
+
+AUTHENTICATION
+==============
+- JWT tokens are issued upon successful signup/login
+- Tokens expire after 7 days
+- Include token in Authorization header: "Bearer <token>"
+- Protected routes require valid, non-expired tokens
+
+TESTING WITH CURL
+=================
+See docs/curl_collections.json for complete cURL commands.
+
+Example Signup:
+curl -X POST http://localhost:5000/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sanskruti",
+    "email": "sanskruti@example.com",
+    "username": "sankii30",
+    "number": "1234567890",
+    "password": "Om101105"
+  }'
+
+Example Login:
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identifier": "sankii30",
+    "password": "Om101105"
+  }'
+
+Example Profile (replace TOKEN with actual token):
+curl -X GET http://localhost:5000/api/auth/profile \
+  -H "Authorization: Bearer TOKEN"
+
+TESTING WITH POSTMAN
+====================
+Import docs/postman_collections.json into Postman for GUI testing.
+The collection includes automatic token management.
+
+SAMPLE DATA
+===========
+Name: Sanskruti
+Email: sanskruti@example.com
+Username: sankii30
+Password: Om101105
+Number: 1234567890 (optional)
+
+ERROR HANDLING
+==============
+- All endpoints return JSON responses
+- Error responses include a "message" field
+- HTTP status codes: 200 (success), 201 (created), 400 (bad request), 401 (unauthorized), 500 (server error)
+
+FUTURE EXTENSIONS
+================
+The User schema is designed to be extensible. Additional fields can be added without breaking existing functionality.
+
+Last Updated: December 4, 2025

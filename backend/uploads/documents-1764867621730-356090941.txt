@@ -1,0 +1,794 @@
+# Blueprint + UI rules + terminal-style diagrams
+
+Nice — I’ll deliver everything you asked for in one neat package:
+
+* A **copy-paste friendly blueprint** for **14** high-value AI agents (you can expand to 20 later) — each blueprint is structured so Copilot can generate the code and wiring.
+* **Frontend rules** (no emojis, use official icons), what unauthenticated users see vs authenticated users.
+* **Theme switching** plan + a small implementation snippet (React/Tailwind + CSS variables) you can give to Copilot.
+* **Terminal-style diagrams (ASCII/monospace)** for system architecture, data flow, folder structure, auth flow, and agent lifecycle (copy/paste-ready).
+
+---
+
+# 1) Agents — structured blueprints (copy to Copilot)
+
+Use this exact structure for each agent (JSON-like). Each agent block below is ready to paste into Copilot as "Agent spec" files or prompts.
+
+```
+# AGENT_SPEC: <agent_id>
+name: "<Friendly Agent Name>"
+slug: "<agent_slug>"                  # e.g., content_summarizer
+description: "<One-line purpose>"
+category: "<content/data/productivity/ops>"
+ui_card:
+  title: "<Card title>"
+  short: "<short description for agent gallery>"
+  inputs:
+    - name: "<input_name>"
+      type: "<text/file/url/file-upload>"
+      required: true/false
+  outputs:
+    - type: "<text/file/json/url>"
+    - preview: true/false
+tooling:
+  tools_required:
+    - llm: ["gpt-5", "gemini", "openai"]
+    - storage: ["s3/chunks", "vectordb(chroma/qdrant)"]
+    - external_api: ["youtube", "gmail", "github", ...]
+  async_workers: true/false
+  queue: "redis/rabbitmq/sqs" or null
+endpoints:
+  api:
+    - route: "/api/agents/<agent_slug>/run"
+      method: "POST"
+      auth: "user" / "public" / "admin"
+  websocket: true/false
+persistence:
+  save_results: true/false
+  memory_type: "ephemeral/persistent/embedding"
+  retention_days: integer
+security:
+  auth_required: true/false
+  scopes: ["read:user", "write:agent_run"]
+  rate_limit_per_min: integer
+ui_interactions:
+  page: "agent-detail"
+  widgets: ["prompt-editor", "file-upload", "run-button", "progress"]
+  realtime: true/false
+sample_prompt: |
+  "<A high-quality prompt formatted for the LLM>"
+notes:
+  complexity_estimate: "low/medium/high"
+  extra_steps: "requires API keys, consent screen, etc."
+```
+
+Below are 14 concrete agents following that format.
+
+---
+
+## 1. Content Summarizer (news_summarizer)
+
+```
+name: "Content Summarizer"
+slug: "news_summarizer"
+description: "Summarize long articles / PDFs into short TL;DR, bullets and key quotes"
+category: "content"
+ui_card:
+  title: "Summarize Content"
+  short: "Upload or paste text, get concise summaries and bullets"
+  inputs:
+    - name: "text_or_file" type: "text/file" required: true
+  outputs:
+    - type: "text" preview: true
+tooling:
+  tools_required:
+    - llm: ["gpt-5"]
+    - storage: ["s3"]
+    - parsing: ["pdf-parser"]
+  async_workers: false
+endpoints:
+  api:
+    - route: "/api/agents/news_summarizer/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "ephemeral" retention_days: 30
+security:
+  auth_required: true scopes: ["user:read"] rate_limit_per_min: 20
+ui_interactions:
+  page: "agent-detail" widgets: ["text-editor","summary-view","download"]
+sample_prompt: |
+  "Read the input and produce (1) a 3-sentence TL;DR, (2) 5 bullet key points, (3) 2 suggested headlines."
+notes:
+  complexity_estimate: "low"
+```
+
+---
+
+## 2. YouTube Video Finder (youtube_finder)
+
+```
+name: "YouTube Video Finder"
+slug: "youtube_finder"
+description: "Find, rank and download lecture videos from playlists or search queries"
+category: "content"
+ui_card:
+  title: "Find Videos"
+  short: "Give a playlist or search keywords, returns top N videos with metadata"
+  inputs:
+    - name: "query_or_playlist_url" type: "text" required: true
+    - name: "limit" type: "number" required: false
+tooling:
+  tools_required:
+    - youtube_api
+    - downloader: "yt-dlp"
+    - llm: ["gpt-5"] for filtering
+  async_workers: true
+  queue: "redis"
+endpoints:
+  api:
+    - route: "/api/agents/youtube_finder/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 90
+security:
+  auth_required: true rate_limit_per_min: 10
+ui_interactions:
+  widgets: ["url-input","checkbox:download","progress-bar","download-link"]
+sample_prompt: |
+  "List top 6 lecture videos for {query}, prefer full-length classroom lectures, exclude ads and shorts."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 3. Email Composer (email_gen)
+
+```
+name: "Email Composer"
+slug: "email_gen"
+description: "Generate professional emails: meeting notes, supplier invites, follow-ups"
+category: "productivity"
+ui_card:
+  title: "Auto Email"
+  short: "Generate email drafts with tone, length, recipient role"
+  inputs:
+    - name: "purpose" type: "text" required: true
+    - name: "tone" type: "select" required: false
+tooling:
+  tools_required:
+    - llm ["gpt-5"]
+    - smtp_client ["sendgrid/gmail"]
+  async_workers: false
+endpoints:
+  api:
+    - route: "/api/agents/email_gen/run" method: "POST" auth: "user"
+persistence:
+  save_results: false memory_type: "ephemeral"
+security:
+  auth_required: true scopes: ["email:send"] rate_limit_per_min: 30
+ui_interactions:
+  widgets: ["to-field","subject-suggest","body-editor","send-button"]
+sample_prompt: |
+  "Write a polite follow-up email after a product demo, 6 sentences, friendly professional tone."
+notes:
+  complexity_estimate: "low"
+```
+
+---
+
+## 4. Data Analyzer (eda_agent)
+
+```
+name: "EDA & Insights"
+slug: "eda_agent"
+description: "Run automated exploratory data analysis from CSV or DB table"
+category: "data"
+ui_card:
+  title: "Auto EDA"
+  short: "Upload CSV, get charts, correlations, and natural-language insights"
+  inputs:
+    - name: "csv_upload" type: "file" required: true
+tooling:
+  tools_required:
+    - python_env (pandas, matplotlib)
+    - llm: ["gpt-5"] for narrative
+    - storage: ["s3"]
+  async_workers: true
+  queue: "celery"
+endpoints:
+  api:
+    - route: "/api/agents/eda_agent/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 365
+security:
+  auth_required: true rate_limit_per_min: 5
+ui_interactions:
+  widgets: ["file-upload","chart-grid","commentary"]
+sample_prompt: |
+  "Perform EDA: show missingness, top correlations, numeric distributions, and 5 actionable insights."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+## 5. Code Assistant (code_fix_agent)
+
+```
+name: "Code Assistant"
+slug: "code_fix_agent"
+description: "Explain, debug, and propose fixes for code snippets or repos"
+category: "devtools"
+ui_card:
+  title: "Code Helper"
+  short: "Paste code, get issue detection, tests, and patch suggestions"
+  inputs:
+    - name: "code_snippet" type: "text" required: true
+    - name: "repo_url" type: "text" required: false
+tooling:
+  tools_required:
+    - llm
+    - git integration
+    - runtime sandbox (optional)
+  async_workers: false
+endpoints:
+  api:
+    - route: "/api/agents/code_fix_agent/run" method: "POST" auth: "user"
+persistence:
+  save_results: false memory_type: "ephemeral"
+security:
+  auth_required: true rate_limit_per_min: 15
+ui_interactions:
+  widgets: ["code-editor","issue-list","patch-download"]
+sample_prompt: |
+  "Find bugs in this Python function, propose minimal patch, and explain root cause briefly."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 6. Meeting Recorder & Summarizer (meet_scribe)
+
+```
+name: "Meeting Scribe"
+slug: "meet_scribe"
+description: "Transcribe audio/zoom recordings, summarize action items, create tasks"
+category: "productivity"
+ui_card:
+  title: "Meeting Scribe"
+  short: "Upload audio or connect calendar, get transcript and action items"
+  inputs:
+    - name: "audio_file" type: "file" required: true
+tooling:
+  tools_required:
+    - speech_to_text ["whisper/gcloud"]
+    - llm
+    - tasks_api
+  async_workers: true
+  queue: "redis"
+endpoints:
+  api:
+    - route: "/api/agents/meet_scribe/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 180
+security:
+  auth_required: true rate_limit_per_min: 2
+ui_interactions:
+  widgets: ["audio-player","transcript","action-items","create-task-button"]
+sample_prompt: |
+  "Produce a short summary, list of 5 action items with owners and deadlines inferred if present."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+## 7. SEO Content Generator (seo_writer)
+
+```
+name: "SEO Writer"
+slug: "seo_writer"
+description: "Generate blog posts optimized for given keyword and meta tags"
+category: "marketing"
+ui_card:
+  title: "SEO Content"
+  short: "Generate blog outline, draft, meta description and suggested images"
+  inputs:
+    - name: "keyword" type: "text" required: true
+tooling:
+  tools_required:
+    - llm
+    - serp_api
+    - image_api
+endpoints:
+  api:
+    - route: "/api/agents/seo_writer/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 365
+security:
+  auth_required: true rate_limit_per_min: 10
+ui_interactions:
+  widgets: ["keyword-input","outline-view","draft-editor","meta-suggestions"]
+sample_prompt: |
+  "Create SEO-optimized 1200-word blog post for keyword '{keyword}' with H1,H2,H3 and meta description."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 8. Image Designer (image_gen_agent)
+
+```
+name: "Image Designer"
+slug: "image_gen_agent"
+description: "Generate or edit images from prompts and user-uploaded images"
+category: "creative"
+ui_card:
+  title: "Image Studio"
+  short: "Text-to-image and image-editing (background removal, style transfer)"
+  inputs:
+    - name: "prompt" type: "text" required: true
+    - name: "reference_image" type: "file" required: false
+tooling:
+  tools_required:
+    - image_generation_api
+    - storage
+endpoints:
+  api:
+    - route: "/api/agents/image_gen_agent/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 30
+security:
+  auth_required: true rate_limit_per_min: 20
+ui_interactions:
+  widgets: ["prompt-editor","image-canvas","download"]
+sample_prompt: |
+  "Create a clean product mockup of a smartwatch on white background, photorealistic."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 9. Market Signals Agent (market_watch)
+
+```
+name: "Market Watch"
+slug: "market_watch"
+description: "Fetch live market data, compute indicators, and send signals/alerts"
+category: "finance"
+ui_card:
+  title: "Market Signals"
+  short: "Real-time price alerts, compute IV, MA crossover, RSI"
+  inputs:
+    - name: "symbol" type: "text" required: true
+tooling:
+  tools_required:
+    - market_data_api
+    - llm (for natural language summarization)
+    - scheduler (cron)
+  async_workers: true queue: "rabbitmq"
+endpoints:
+  api:
+    - route: "/api/agents/market_watch/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 30
+security:
+  auth_required: true scopes: ["market:read"] rate_limit_per_min: 60
+ui_interactions:
+  widgets: ["live-chart","alerts","strategy-config"]
+sample_prompt: |
+  "Monitor BTCUSD, alert when 50MA crosses 200MA or RSI > 70; summarize reason in plain language."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+## 10. Knowledge Base Agent (kb_agent)
+
+```
+name: "Knowledge Base"
+slug: "kb_agent"
+description: "Ingest docs, create embeddings, answer queries and cite source pages"
+category: "enterprise"
+ui_card:
+  title: "Document Q&A"
+  short: "Upload PDFs/docx and ask questions with source citation"
+  inputs:
+    - name: "documents" type: "file" required: true
+tooling:
+  tools_required:
+    - embedding_model
+    - vector_db (qdrant/chroma)
+    - llm
+  async_workers: true
+endpoints:
+  api:
+    - route: "/api/agents/kb_agent/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 365
+security:
+  auth_required: true rate_limit_per_min: 20
+ui_interactions:
+  widgets: ["upload","query-box","source-list"]
+sample_prompt: |
+  "Answer the user's question using the documents and show top-3 sources with page numbers."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+## 11. Task Automation Agent (workflow_builder)
+
+```
+name: "Workflow Builder"
+slug: "workflow_builder"
+description: "Automate sequences: trigger->action chains (e.g., email on new file)"
+category: "automation"
+ui_card:
+  title: "Automate Tasks"
+  short: "Visual rule builder to chain agents and services"
+  inputs:
+    - name: "trigger" type: "select" required: true
+tooling:
+  tools_required:
+    - worker_engine
+    - message_queue
+    - llm (optional)
+endpoints:
+  api:
+    - route: "/api/agents/workflow_builder/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent"
+security:
+  auth_required: true rate_limit_per_min: 5
+ui_interactions:
+  widgets: ["visual-editor","run-simulator","logs"]
+sample_prompt: |
+  "If CSV arrives in bucket, run EDA agent, then email summary to admin."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+## 12. Resume Optimizer (resume_opt)
+
+```
+name: "Resume Optimizer"
+slug: "resume_opt"
+description: "Rewrite resume for a target job description and output ATS-friendly format"
+category: "career"
+ui_card:
+  title: "Resume Optimizer"
+  short: "Upload CV + JD, get tailored resume and bullet suggestions"
+  inputs:
+    - name: "resume_file" type: "file" required: true
+    - name: "job_description" type: "text" required: true
+tooling:
+  tools_required:
+    - llm
+    - pdf-generator
+endpoints:
+  api:
+    - route: "/api/agents/resume_opt/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 365
+security:
+  auth_required: true rate_limit_per_min: 10
+ui_interactions:
+  widgets: ["upload","jd-input","download-pdf"]
+sample_prompt: |
+  "Rewrite the resume for {job_description}, keep length to 1 page, optimize keywords for ATS."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 13. Design QA Agent (ux_audit)
+
+```
+name: "UX Audit"
+slug: "ux_audit"
+description: "Analyze UI screenshots or URLs for accessibility, layout, and heuristics"
+category: "design"
+ui_card:
+  title: "UX Audit"
+  short: "Upload screenshot or URL, get prioritized UX issues with fixes"
+  inputs:
+    - name: "screenshot_or_url" type: "file/text" required: true
+tooling:
+  tools_required:
+    - llm
+    - axe-core (accessibility)
+    - image-analysis
+endpoints:
+  api:
+    - route: "/api/agents/ux_audit/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "ephemeral"
+security:
+  auth_required: true rate_limit_per_min: 5
+ui_interactions:
+  widgets: ["screenshot-view","issue-list","fix-snippets"]
+sample_prompt: |
+  "List top 10 UX issues and provide exact HTML/CSS fixes and accessibility tags."
+notes:
+  complexity_estimate: "medium"
+```
+
+---
+
+## 14. Personal Assistant (personal_agent)
+
+```
+name: "Personal Assistant"
+slug: "personal_agent"
+description: "Multi-purpose assistant: calendar, notes, reminders, small workflows"
+category: "assistant"
+ui_card:
+  title: "Personal AI"
+  short: "Manage simple tasks, set reminders, summarize inbox"
+  inputs:
+    - name: "query" type: "text" required: true
+tooling:
+  tools_required:
+    - calendar_api
+    - email_api
+    - llm
+endpoints:
+  api:
+    - route: "/api/agents/personal_agent/run" method: "POST" auth: "user"
+persistence:
+  save_results: true memory_type: "persistent" retention_days: 365
+security:
+  auth_required: true scopes: ["calendar","email"] rate_limit_per_min: 30
+ui_interactions:
+  widgets: ["chat","quick-actions","reminders"]
+sample_prompt: |
+  "Add a meeting with Dr. Rao on Wednesday 3pm and send agenda to invitees."
+notes:
+  complexity_estimate: "high"
+```
+
+---
+
+# 2) Frontend design & rules (what users see before/after login)
+
+**Global rules you should give Copilot / developer team:**
+
+* **No emojis** in official UI copy. Use a consistent icon set (Material Icons, Heroicons, or FontAwesome Pro). Example: use `<svg>` official icons from the chosen library.
+* **Typography**: Use variable fonts (Inter/InterVariable) for headings/body. Maintain consistent scale (H1, H2, H3).
+* **Color system**: Define core semantic variables: `--brand`, `--accent`, `--bg`, `--muted`, `--text` and `--danger`. Do not hardcode colors inline.
+* **Accessible contrast**: Ensure text 4.5:1 for body and 3:1 for large headings in default theme.
+* **Microcopy**: Use short, actionable CTA text. Avoid casual slang.
+* **Icons instead of emojis**: Always pick icons that communicate meaning (download, settings, login, lock, lock-open). Use tooltips.
+
+**Pages / views and what they show**
+
+1. **Public (logged-out)**
+
+   * Homepage hero, Agents gallery (cards with short description), Pricing / Plans teaser, Features, Footer.
+   * Signup / Login CTA prominent.
+   * **No access** to agent run endpoints (calls requiring backend auth must return 401).
+   * Allow: read-only agent detail pages with demo mode (sandbox prompt) and sample outputs — but actual run -> show modal asking to log in.
+   * Allow download of public docs, FAQ, and contact form.
+
+2. **Authenticated (logged-in)**
+
+   * Dashboard with recent runs, saved projects, billing, API keys, and full access to run agents.
+   * Per-agent detail page: full prompt editor, config options, run history, download results, schedule runs.
+   * Role-based views (user vs admin): admin can manage agent configs, view logs, throttle, toggle public/private.
+
+3. **Safety gating**
+
+   * For agents that can take actions (send emails, trade, download), require **explicit consent and authorization** (OAuth screens or API key linkage).
+   * Show clear permission scopes when connecting external accounts.
+
+4. **Errors & limits**
+
+   * Show clear, friendly errors: e.g., “Rate limit exceeded — try again in 30s” with a suggested action.
+   * Provide “Sandbox mode” for demo when user is not logged in (no external calls, fake data) — label clearly.
+
+---
+
+# 3) Theme switching (Dark/Light) — plan + code
+
+**Approach summary**
+
+* Use CSS variables for colors and define two sets: `:root` (light) and `.theme-dark`.
+* Use `prefers-color-scheme` to detect default and fallback to user preference stored in `localStorage`.
+* Provide accessible color tokens and let Tailwind map to CSS variables or use Tailwind with CSS variables.
+
+**Why this is crucial**
+
+* Color consistency and contrast are easier when you reference tokens (brand/primary/secondary/text/muted). Theme toggle only swaps tokens.
+* Use official brand colors for accents and keep background/foreground neutral.
+
+**React + Tailwind friendly snippet (give to Copilot)**
+
+```jsx
+// ui/ThemeProvider.jsx
+import React, { useEffect, useState } from 'react';
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(
+    localStorage.getItem('site-theme') ||
+    (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  );
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('theme-dark', theme === 'dark');
+    localStorage.setItem('site-theme', theme);
+  }, [theme]);
+
+  return children;
+};
+
+// Toggle button usage:
+<button
+  aria-label="Toggle theme"
+  onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+>
+  <svg ...>/* use official icon */</svg>
+</button>
+```
+
+**CSS variables (global.css)**
+
+```css
+:root{
+  --bg: #ffffff;
+  --card-bg: #ffffff;
+  --text: #0f1724;
+  --muted: #6b7280;
+  --brand: #ff8a00; /* orange accent */
+  --accent-2: #ffbf69;
+  --surface-elev-1: #f7f7f8;
+}
+
+.theme-dark{
+  --bg: #0b1220;
+  --card-bg: #0f1724;
+  --text: #e6eef6;
+  --muted: #9aa6b2;
+  --brand: #ff9f1c;
+  --accent-2: #ffbf69;
+  --surface-elev-1: #0b1220;
+}
+
+body{
+  background: var(--bg);
+  color: var(--text);
+}
+.card{ background: var(--card-bg); box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
+.btn-primary{ background: var(--brand); color: white; }
+```
+
+**Tailwind note**
+
+* Use Tailwind CSS but reference CSS variables in `tailwind.config.js` or use `style={{ backgroundColor: 'var(--card-bg)' }}` in components.
+* Or use Twin.macro / plugin that maps CSS variables to Tailwind tokens.
+
+---
+
+# 4) Icons & no emoji rule (brief directive for Copilot/devs)
+
+* Do **not** insert emoji characters anywhere in UI copy, navigation, or buttons.
+* Use a single icon library across the site: **Heroicons (outline/solid)** or **Material Icons**. Example: `<HeroIcon name="UserIcon" />`.
+* Provide an icons component wrapper that maps semantic names to svg:
+
+  ```jsx
+  // ui/Icon.jsx
+  import { UserIcon, LockClosedIcon } from '@heroicons/react/outline';
+  const ICONS = { user: UserIcon, lock: LockClosedIcon, download: /* ... */ };
+  export default function Icon({ name, className }) {
+    const C = ICONS[name];
+    return C ? <C className={className} aria-hidden="true"/> : null;
+  }
+  ```
+
+---
+
+# 5) Terminal-style diagrams (ASCII) — copy/paste-ready
+
+### A) High-level system architecture
+
+```
++----------------------+       +----------------------+       +---------------------+
+|   Frontend (React)   |  <--  |  Backend API (FastAPI)|  <--  |   Auth Service      |
+| - Agent gallery/UI   |       | - /api/agents/*      |       | - JWT / OAuth       |
+| - Theme toggle       |       | - user/project mgmt  |       |                     |
++----------+-----------+       +----+-----------------+       +---------+-----------+
+           |                            |                              |
+           v                            v                              v
+     [ Browser ]                 [ Worker queue ]                [ External APIs ]
+           |                            |                              |
+           v                            v                              v
++----------------------+       +----------------------+       +---------------------+
+| Websocket / SSE      |       |  Worker (Celery)     |       |  3rd-party APIs     |
+| (progress updates)   |       | - run agent tasks    |       | - YouTube, Sendgrid |
++----------------------+       | - call LLM / image   |       +---------------------+
+                                +----+-----+-----+----+
+                                     |     |     |
+                                     v     v     v
+                              +-------+  +---+  +-------+
+                              | VectorDB| |S3|  | DB    |
+                              +--------+ +---+  +-------+
+```
+
+### B) Agent lifecycle (run a task)
+
+```
+[User clicks RUN] -> POST /api/agents/:slug/run  (auth token)
+     |
+     v
+[API validates input] -> creates Job record -> push Job -> Queue
+     |
+     v
+[Worker picks Job] -> tool chain: LLM -> external API -> process -> save results
+     |
+     v
+[Worker updates Job status] -> send progress via WS -> result stored in DB/S3
+     |
+     v
+[Frontend receives WS event] -> shows result preview / download link
+```
+
+### C) Folder structure (terminal view)
+
+```
+ai_site/
+├─ frontend/              # React + Tailwind
+│  ├─ public/
+│  └─ src/
+│     ├─ components/
+│     ├─ pages/
+│     ├─ agents/          # per-agent UI components
+│     └─ styles/
+├─ backend/               # FastAPI / Express
+│  ├─ app/
+│  │  ├─ agents/          # controller per agent
+│  │  ├─ workers/
+│  │  └─ services/
+│  ├─ Dockerfile
+│  └─ requirements.txt
+├─ agents/                # agent definitions (YAML/JSON)
+│  ├─ youtube_finder.yaml
+│  └─ eda_agent.yaml
+├─ infra/
+└─ docs/
+```
+
+### D) Auth & permission flow
+
+```
+[User] --(login)--> [Auth Server (OAuth/JWT)] --(token)--> [Frontend]
+Frontend -> attach Authorization: Bearer <JWT> to /api calls
+Backend:
+  - /public endpoints -> no auth
+  - /api/agents/* -> require auth header, validate scopes
+  - admin endpoints -> require admin scope
+```
+
+---
+
+# 6) Quick delivery checklist for Copilot (give this to Copilot to implement UI + Agents)
+
+```
+- Use React + TypeScript + Tailwind CSS
+- Use Heroicons for all icons (no emoji)
+- Theme support: CSS variables + toggle persisted in localStorage
+- Agent specs stored in /agents/*.yaml; backend reads these to generate routes
+- Backend: FastAPI or Express with Passport/OAuth; JWT based auth
+- Worker: Celery or BullMQ for long-running agent tasks; use Redis
+- Storage: S3 for large outputs; Postgres for metadata; Qdrant/Chroma for embeddings
+- Provide sample data + demo mode for public (no external calls)
+- Add feature flags for enabling/disabling critical agents
+- Add E2E tests for one agent each (unit tests too)
+- CI: run lint, tests, build and Docker push
+```
+
