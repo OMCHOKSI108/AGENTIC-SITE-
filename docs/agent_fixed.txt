@@ -1,0 +1,198 @@
+This is the **"Cloud DevOps & FinTech Edition"** of your agent list.
+
+I have removed the "weak wrappers" (like Translator, Text Summarizer) and replaced them with **Engineering-Grade Agents** that will actually get you hired or attract serious users.
+
+Here is your **Final "Perfect 20" List**, followed by the **Codebase Fixes** you need to make the site professional.
+
+-----
+
+### **Part 1: The "Perfect 20" Agent List**
+
+I have categorized them so your project structure is clean.
+
+#### **Category A: Cloud & DevOps (The "Money" Makers)**
+
+*These replace the generic tools. They show you understand Cloud Engineering.*
+
+1.  **Cloud Cost Auditor (NEW)**
+      * **Input:** AWS/Azure Billing CSV.
+      * **Output:** "You are wasting $40/mo on idle EC2s. Here is a CLI command to stop them."
+2.  **CI/CD Pipeline Generator (NEW)**
+      * **Input:** "React Frontend + Node Backend".
+      * **Output:** Complete `.github/workflows/deploy.yml` file (Build → Test → Deploy).
+3.  **Log Anomaly Detective (NEW)**
+      * **Input:** Paste 500 lines of server error logs.
+      * **Output:** "Root cause is a DB connection timeout on line 45. Fix suggestion: Increase pool size."
+4.  **Terraform Architect (NEW)**
+      * **Input:** "I need a VPC with 2 public subnets and an S3 bucket."
+      * **Output:** Valid `main.tf` code block.
+5.  **Dockerizer Agent (NEW)**
+      * **Input:** GitHub Repo URL or Code snippet.
+      * **Output:** A production-ready `Dockerfile` and `docker-compose.yml`.
+
+#### **Category B: FinTech & Data (Your "Niche")**
+
+*These are high-value for your algorithmic trading interest.*
+
+6.  **Trading Strategy Backtester (UPGRADED)**
+      * **Input:** Strategy Logic + Historic CSV Data.
+      * **Output:** ROI, Max Drawdown, Win Rate. (Don't just analyze; *simulate*).
+7.  **Crypto Sentiment Scout (NEW)**
+      * **Input:** Coin Symbol (e.g., "SOL").
+      * **Output:** "Bullish (75%)" based on last 24h news headlines & Reddit sentiment.
+8.  **Auto EDA (Exploratory Data Analysis)**
+      * **Input:** CSV File.
+      * **Output:** Interactive charts + "Data Quality Score" (missing values, duplicates).
+9.  **Smart SQL Generator**
+      * **Input:** English Question + Schema.
+      * **Output:** Optimized SQL query.
+10. **Financial Report Simplifier**
+      * **Input:** Upload PDF (Earnings Call / 10-K).
+      * **Output:** "Revenue up 10%, Risks: Supply chain."
+
+#### **Category C: Developer Tools**
+
+11. **Code Doctor (Debugger + Security)**
+      * **Input:** Code snippet.
+      * **Output:** Bug fix + **Security Vulnerability Check** (e.g., "Fix this SQL Injection").
+12. **API Documentation Generator**
+      * **Input:** Code file (e.g., `routes.js`).
+      * **Output:** Swagger/OpenAPI Spec (JSON) or Markdown docs.
+13. **Readme.md Architect**
+      * **Input:** Repository URL.
+      * **Output:** Professional `README.md` with badges, install steps, and project summary.
+14. **Regex Generator & Explainer**
+      * **Input:** "Match email addresses but not from gmail.com".
+      * **Output:** The Regex string + explanation.
+
+#### **Category D: Productivity (The "Best of the Rest")**
+
+15. **Legal Contract Auditor** (Replaces Text Summarizer)
+      * **Input:** Contract PDF.
+      * **Output:** "Flagged Clauses: Non-compete is valid for 5 years (Standard is 1 year)."
+16. **Cold Outreach Writer** (Replaces Email Gen)
+      * **Input:** Company URL + My Offer.
+      * **Output:** Personalized email analyzing *their* website to pitch *your* service.
+17. **Meeting Scribe (Voice Notes)**
+      * **Input:** Audio file.
+      * **Output:** Transcript + Action Items list.
+18. **Resume ATS Optimizer**
+      * **Input:** Resume PDF + Job Description.
+      * **Output:** "Your resume is a 40% match. Add keywords: 'Kubernetes', 'CI/CD'."
+19. **YouTube Lecture Finder**
+      * **Input:** "Learn Dynamic Programming".
+      * **Output:** Top 3 *highly-rated* specific video segments (not just generic search).
+20. **Knowledge Base Chat (RAG)**
+      * **Input:** Upload 10 PDFs.
+      * **Output:** Chat bot that answers based *only* on those files.
+
+-----
+
+### **Part 2: New Agent Specs (Copy-Paste for Copilot)**
+
+Here are the specs for the new **DevOps Agents** to paste into your codebase generation tool.
+
+#### **1. Cloud Cost Auditor (`cloud_cost_agent`)**
+
+```yaml
+name: "Cloud Cost Auditor"
+slug: "cloud_cost_agent"
+description: "Analyze billing CSVs to find idle resources and wasted spend."
+category: "devops"
+inputs:
+  - name: "billing_file"
+    type: "file"
+    required: true
+    description: "AWS Cost & Usage Report (CSV) or Azure Billing CSV"
+outputs:
+  - type: "json_report"
+    preview: true
+tooling:
+  llm: "gpt-4o"
+  python_libs: ["pandas", "openpyxl"]
+sample_prompt: |
+  "Analyze this AWS billing CSV. Identify the top 3 most expensive services.
+  Find any 'EC2' instances with < 5% CPU utilization (if data allows) or flag 'Elastic IPs' that are unattached.
+  Calculate potential monthly savings."
+```
+
+#### **2. CI/CD Pipeline Generator (`cicd_agent`)**
+
+```yaml
+name: "CI/CD Pipeline Generator"
+slug: "cicd_agent"
+description: "Generate GitHub Actions or GitLab CI workflows for any stack."
+category: "devops"
+inputs:
+  - name: "project_description"
+    type: "text"
+    required: true
+    example: "React frontend with Vite, deploy to S3. Node backend deploy to EC2."
+outputs:
+  - type: "code"
+    language: "yaml"
+tooling:
+  llm: "gpt-4o"
+sample_prompt: |
+  "Create a .github/workflows/main.yml file.
+  Stack: {project_description}.
+  Include steps for: Checkout code, Install dependencies (npm ci), Run Linter, Run Tests, Build.
+  Add comments explaining each step."
+```
+
+-----
+
+### **Part 3: Fixes for Your Current Codebase**
+
+Based on the files you shared (`agents_information.txt`), your current codebase needs these specific fixes to be "Production Ready."
+
+#### **1. Fix the "Theme Switcher" Flicker**
+
+  * **Problem:** The current snippet might cause a "white flash" on dark mode reload.
+  * **Fix:** Move the theme detection script **into the `<head>` tag** of your `index.html` (before React loads).
+    ```javascript
+    // Add this inside <head> in index.html
+    <script>
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
+    ```
+
+#### **2. Enforce "Rate Limiting" on Public Agents**
+
+  * **Problem:** If you make this free, bots will drain your API credits.
+  * **Fix:** Add a simple middleware in your backend (FastAPI/Express).
+      * **Logged Out Users:** 3 runs per day (track via IP address).
+      * **Logged In Users:** 50 runs per day.
+      * **Return:** `429 Too Many Requests` status code.
+
+#### **3. Standardize the "Agent Response" JSON**
+
+  * **Problem:** If Agent A returns `{ text: "..." }` and Agent B returns `{ output: "..." }`, your frontend code gets messy.
+  * **Fix:** Enforce a strict schema for **all** agents:
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "markdown": "## Result...",
+        "files": [ {"name": "report.pdf", "url": "..."} ],
+        "meta": { "cost": 0.002, "time_ms": 450 }
+      }
+    }
+    ```
+
+#### **4. Add "Sandbox Mode" for Demos**
+
+  * **Problem:** Users won't sign up if they can't test it.
+  * **Fix:** For the **top 3 agents** (like Resume Optimizer), allow 1 free run *without* login.
+      * **UI:** Show a blurred result or the first 50% of the output, then show a "Login to see full report" button.
+
+#### **5. UI Polish: "Terminal" vs "Card" View**
+
+  * **Problem:** The blueprints mention both "Terminal style" and "Card style."
+  * **Fix:**
+      * **Dashboard:** Use **Card Grid** (clean, easier to browse 20 agents).
+      * **Agent Run Page:** Use **Split Screen**. Left side = Inputs. Right side = Terminal-style output window (monospace font, dark background) to look like a "DevOps Console."

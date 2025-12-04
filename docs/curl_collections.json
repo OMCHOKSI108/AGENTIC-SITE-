@@ -1,0 +1,34 @@
+{
+  "collection": "Agentic Site API - cURL Commands",
+  "description": "cURL commands for testing the backend APIs",
+  "baseUrl": "http://localhost:5000",
+  "requests": [
+    {
+      "name": "Signup",
+      "description": "Create a new user account",
+      "curl": "curl -X POST http://localhost:5000/api/auth/signup \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"name\": \"Sanskruti\",\n    \"email\": \"sanskruti@example.com\",\n    \"username\": \"sankii30\",\n    \"number\": \"1234567890\",\n    \"password\": \"Om101105\"\n  }'"
+    },
+    {
+      "name": "Login with Username",
+      "description": "Login using username",
+      "curl": "curl -X POST http://localhost:5000/api/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"identifier\": \"sankii30\",\n    \"password\": \"Om101105\"\n  }'"
+    },
+    {
+      "name": "Login with Email",
+      "description": "Login using email",
+      "curl": "curl -X POST http://localhost:5000/api/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"identifier\": \"sanskruti@example.com\",\n    \"password\": \"Om101105\"\n  }'"
+    },
+    {
+      "name": "Get Profile",
+      "description": "Get user profile (replace TOKEN with actual JWT token from login response)",
+      "curl": "curl -X GET http://localhost:5000/api/auth/profile \\\n  -H \"Authorization: Bearer TOKEN\""
+    }
+  ],
+  "notes": [
+    "1. Run the Signup request first to create a user (skip if user already exists)",
+    "2. After successful login, copy the 'token' value from the response",
+    "3. Replace 'TOKEN' in the Profile request with the actual JWT token",
+    "4. Make sure the backend server is running on http://localhost:5000",
+    "5. Ensure MongoDB is connected"
+  ]
+}

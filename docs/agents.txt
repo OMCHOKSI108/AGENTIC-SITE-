@@ -1,0 +1,350 @@
+here is a **perfect, clean, dev-ready BLUEPRINT** for **20 AI agents**, written in a format **Copilot understands extremely well**.
+Copilot and it will generate files, components, backend routes, and full logic for each agent.
+
+I will give you:
+
+✅ **20 powerful agent ideas**
+✅ **Each agent with:**
+
+* Name
+* Description
+* Input
+* Output
+* Tools/Skills required
+* Ideal frontend UX
+* Ideal backend logic
+
+This is exactly the format Copilot uses to generate complete modules.
+
+---
+
+# 🚀 **MASTER BLUEPRINT — 20 AI AGENTS FOR YOUR AI SITE**
+
+Paste this into Copilot **as-is**.
+
+---
+
+## **AGENT 1 — Auto EDA Agent**
+
+**Description:** Upload CSV → generate EDA report, graphs, summary, correlations.
+**Input:** CSV file
+**Output:** Interactive EDA dashboard + downloadable PDF
+**Tools:** Pandas, Matplotlib, seaborn, LLM summary
+**Frontend:** File upload → progress → chart cards
+**Backend:** Parse CSV, compute stats, generate plots, summary via LLM
+
+---
+
+## **AGENT 2 — SQL Query Generator**
+
+**Description:** Natural language → SQL query + explanation
+**Input:** English question + schema
+**Output:** SQL + optimization tips
+**Tools:** LLM (structured output)
+**Frontend:** Editor + preview
+**Backend:** LLM prompt → return SQL block
+
+---
+
+## **AGENT 3 — SQL Teacher (Explain Query)**
+
+**Description:** Explain any SQL query step-by-step
+**Input:** SQL
+**Output:** Human readable explanation
+**Tools:** LLM
+**Frontend:** Side-by-side panel
+**Backend:** LLM explanation
+
+---
+
+## **AGENT 4 — AI Resume Builder**
+
+**Description:** Generates a polished resume
+**Input:** User details
+**Output:** PDF resume
+**Tools:** LLM + Resume template
+**Frontend:** Multi-step form
+**Backend:** JSON → LLM → PDF generator
+
+---
+
+## **AGENT 5 — Text Summarizer Agent**
+
+**Description:** Summarizes long PDFs, notes, text
+**Input:** Paste text / PDF
+**Output:** concise + detailed summary
+**Tools:** LLM + chunking
+**Frontend:** Text/PDF upload
+**Backend:** chunk → summarize → merge
+
+---
+
+## **AGENT 6 — YouTube Video Downloader + Summarizer**
+
+**Description:** Download video + generate notes
+**Input:** YouTube URL
+**Output:** MP4 + notes + timestamps
+**Tools:** yt-dlp + Whisper + LLM
+**Frontend:** Link → status → notes
+**Backend:** Download → transcribe → summarize
+
+---
+
+## **AGENT 7 — Code Debugger Agent**
+
+**Description:** Finds bugs, fixes code, explains logic
+**Input:** Code
+**Output:** Fixed code + explanation
+**Tools:** LLM + code analysis
+**Frontend:** Code editor
+**Backend:** LLM structured debugging
+
+---
+
+## **AGENT 8 — API Builder Agent**
+
+**Description:** Creates REST API logic from instructions
+**Input:** "Build API for login with MongoDB"
+**Output:** Boilerplate code (Node/Flask/Django)
+**Tools:** LLM code generator
+**Frontend:** Instructions box
+**Backend:** LLM → multi-file code blocks
+
+---
+
+## **AGENT 9 — PDF → JSON Extractor**
+
+**Description:** Parses PDFs into structured JSON
+**Input:** PDF
+**Output:** JSON of headings, text, tables
+**Tools:** PDFminer, LLM for cleanup
+**Frontend:** Upload
+**Backend:** extract → clean → structure
+
+---
+
+## **AGENT 10 — Email Generator Agent**
+
+**Description:** Generates business, meetings, HR emails
+**Input:** Scenario + tone
+**Output:** Full formatted email
+**Tools:** LLM
+**Frontend:** Form cards
+**Backend:** LLM with templates
+
+---
+
+## **AGENT 11 — UI/UX Designer Agent**
+
+**Description:** Generates Figma-like UI ideas
+**Input:** App idea
+**Output:** Wireframes + color palettes
+**Tools:** LLM + image generation
+**Frontend:** Canvas style
+**Backend:** LLM + prompts → images
+
+---
+
+## **AGENT 12 — Research Agent**
+
+**Description:** Searches web + compiles report
+**Input:** Topic
+**Output:** Final research doc
+**Tools:** Search API + LLM
+**Frontend:** Progress steps
+**Backend:** Search → summarize → merge
+
+---
+
+## **AGENT 13 — Trading Strategy Analyzer**
+
+**Description:** Analyze CSV of trades
+**Input:** trades.csv
+**Output:** KPIs, risk analysis
+**Tools:** Pandas, LLM
+**Frontend:** Chart dashboard
+**Backend:** compute → visualize → explain
+
+---
+
+## **AGENT 14 — Image Captioning Agent**
+
+**Description:** Generate captions for images
+**Input:** Image file
+**Output:** Single best caption + tags
+**Tools:** Vision API
+**Frontend:** Upload + preview
+**Backend:** image → vision model → text
+
+---
+
+## **AGENT 15 — Translator Agent**
+
+**Description:** Translate to 100+ languages
+**Input:** Text + target language
+**Output:** Translated text
+**Tools:** LLM or Gemini
+**Frontend:** Language selector
+**Backend:** LLM call
+
+---
+
+## **AGENT 16 — Document Chat Agent**
+
+**Description:** Ask questions from a PDF
+**Input:** PDF + user queries
+**Output:** Answers with references
+**Tools:** Embeddings + vector DB
+**Frontend:** Chat UI
+**Backend:** chunk → embed → query
+
+---
+
+## **AGENT 17 — Code-to-Diagram Agent**
+
+**Description:** Converts code → UML / flowcharts
+**Input:** Code
+**Output:** Mermaid diagram
+**Tools:** LLM
+**Frontend:** Code editor + preview
+**Backend:** LLM → diagram syntax
+
+---
+
+## **AGENT 18 — Social Media Content Generator**
+
+**Description:** Creates posts for Instagram, LinkedIn
+**Input:** Topic + platform
+**Output:** Posts + hashtags + variations
+**Tools:** LLM
+**Frontend:** Platform selector
+**Backend:** LLM structured result
+
+---
+
+## **AGENT 19 — Data Cleaner Agent**
+
+**Description:** Clean + normalize dirty datasets
+**Input:** CSV
+**Output:** Cleaned CSV + logs
+**Tools:** Pandas + LLM
+**Frontend:** Upload
+**Backend:** detect → clean → export
+
+---
+
+## **AGENT 20 — Voice Assistant Agent**
+
+**Description:** Convert voice to text + answer
+**Input:** Microphone input
+**Output:** Audio/voice reply
+**Tools:** Whisper + LLM + TTS
+**Frontend:** Mic UI button
+**Backend:** STT → LLM → TTS
+
+---
+
+
+Goal:
+Build a powerful AI platform with 10–20 modular AI agents. Each agent must have its own backend endpoint, frontend interface, and shared utilities for logging, prompts, error-handling, and security.
+
+Architecture:
+- Frontend: React/Next.js (or Streamlit)
+- Backend: Python FastAPI / Node Express
+- Agents: Each in separate folder with tools, skills, prompts
+- Shared core: LLM client, utils, embeddings, logging
+- DB: MongoDB / PostgreSQL optional
+- Storage: Local + Cloud
+
+Agents Required:
+
+1. Auto EDA Agent
+   Inputs: CSV
+   Outputs: Charts, summary, PDF
+   Tools: pandas, matplotlib, LLM
+
+2. SQL Query Generator Agent
+   Inputs: English + schema
+   Outputs: SQL query
+   Tools: LLM
+
+3. SQL Explainer Agent
+   Inputs: SQL query
+   Outputs: Explanation
+
+4. AI Resume Builder Agent
+   Inputs: Personal details
+   Outputs: Resume PDF
+
+5. Text Summarizer Agent
+   Inputs: Text/PDF
+   Outputs: Summary
+
+6. YouTube Downloader + Summarizer Agent
+   Inputs: URL
+   Outputs: MP4 + Notes
+
+7. Code Debugger Agent
+   Inputs: Code
+   Outputs: Fixed code + explanation
+
+8. API Builder Agent
+   Inputs: Instructions
+   Outputs: API boilerplate
+
+9. PDF to JSON Agent
+   Inputs: PDF
+   Outputs: JSON structure
+
+10. Email Generator Agent
+    Inputs: Scenario
+    Outputs: Email
+
+11. UI/UX Designer Agent
+    Inputs: App idea
+    Outputs: Wireframes + design ideas
+
+12. Research Agent
+    Inputs: Topic
+    Outputs: Structured research report
+
+13. Trading Analyzer Agent
+    Inputs: trades.csv
+    Outputs: KPIs + charts
+
+14. Image Captioning Agent
+    Inputs: Image
+    Outputs: Caption
+
+15. Translator Agent
+    Inputs: Text
+    Outputs: Translation
+
+16. Document Chat Agent
+    Inputs: PDF + queries
+    Outputs: Answers + citations
+
+17. Code-to-Diagram Agent
+    Inputs: Code
+    Outputs: UML diagram (Mermaid)
+
+18. Social Media Content Agent
+    Inputs: Topic
+    Outputs: Posts
+
+19. Data Cleaner Agent
+    Inputs: CSV
+    Outputs: Cleaned dataset
+
+20. Voice Assistant Agent
+    Inputs: Audio
+    Outputs: Audio answer
+
+For each agent:
+- Create backend route: /api/agent-name/execute
+- Create service class: agents/agent_name/service.py
+- Create prompt templates: agents/agent_name/prompt.txt
+- Implement pipeline: validation → processing → LLM → response
+- Create frontend UI: pages/agent-name.jsx
+- Add global error handling & loading state
+- Use modular components: Uploaders, Editors, ResultCards
