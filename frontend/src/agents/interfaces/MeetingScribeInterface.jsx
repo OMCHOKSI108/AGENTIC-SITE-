@@ -469,7 +469,7 @@ const MeetingScribeInterface = ({ agent, onRun }) => {
             type="text"
             value={attendees}
             onChange={(e) => setAttendees(e.target.value)}
-            placeholder="e.g., John Smith, Sarah Johnson, Mike Chen"
+            placeholder="e.g., Om Smith, Sarah Omson, Mike Chen"
             className="w-full p-3 bg-[var(--surface)] border border-[var(--muted)] rounded-lg text-[var(--text)] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
         </div>

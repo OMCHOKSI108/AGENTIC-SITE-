@@ -60,7 +60,7 @@ class MeetingScribeAgent {
 
     // Simulate different types of meetings based on filename
     if (fileName.includes('product')) {
-      return `Good morning team. Let's discuss the new product launch. Sarah, how is the development coming along? We've got about three weeks until launch. The marketing team has prepared the campaign materials. John mentioned some concerns about the API integration. We need to schedule a follow-up meeting with the engineering team. Action items: Sarah to complete API testing by Friday, John to review marketing materials, and I'll send out the meeting invite for next Tuesday.`;
+      return `Good morning team. Let's discuss the new product launch. Sarah, how is the development coming along? We've got about three weeks until launch. The marketing team has prepared the campaign materials. Om mentioned some concerns about the API integration. We need to schedule a follow-up meeting with the engineering team. Action items: Sarah to complete API testing by Friday, Om to review marketing materials, and I'll send out the meeting invite for next Tuesday.`;
     } else if (fileName.includes('standup') || fileName.includes('daily')) {
       return `Daily standup meeting. Mike, what did you work on yesterday? I completed the user authentication feature and started on the dashboard. Today I'll finish the dashboard and help with testing. Any blockers? The API documentation is outdated. Sarah, you mentioned working on the payment integration. I ran into an issue with the payment gateway. Let me show you the error. Okay, let's pair on that after this meeting.`;
     } else {

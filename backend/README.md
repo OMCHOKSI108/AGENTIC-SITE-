@@ -33,9 +33,9 @@ Create a new user account.
 **Request Body:**
 ```json
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "username": "johndoe",
+  "name": "Om Choksi",
+  "email": "Om@example.com",
+  "username": "Omdoe",
   "number": "1234567890", // optional
   "password": "password123"
 }
@@ -48,9 +48,9 @@ Create a new user account.
   "token": "jwt-token-here",
   "user": {
     "id": "user-id",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "username": "johndoe",
+    "name": "Om Choksi",
+    "email": "Om@example.com",
+    "username": "Omdoe",
     "number": "1234567890"
   }
 }
@@ -62,7 +62,7 @@ Login with username or email.
 **Request Body:**
 ```json
 {
-  "identifier": "johndoe", // or email
+  "identifier": "Omdoe", // or email
   "password": "password123"
 }
 ```
@@ -74,9 +74,9 @@ Login with username or email.
   "token": "jwt-token-here",
   "user": {
     "id": "user-id",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "username": "johndoe",
+    "name": "Om Choksi",
+    "email": "Om@example.com",
+    "username": "Omdoe",
     "number": "1234567890"
   }
 }
@@ -95,9 +95,9 @@ Authorization: Bearer jwt-token-here
 {
   "user": {
     "id": "user-id",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "username": "johndoe",
+    "name": "Om Choksi",
+    "email": "Om@example.com",
+    "username": "Omdoe",
     "number": "1234567890",
     "createdAt": "2025-12-04T00:00:00.000Z"
   }

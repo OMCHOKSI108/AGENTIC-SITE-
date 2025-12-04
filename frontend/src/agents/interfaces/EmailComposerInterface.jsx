@@ -322,7 +322,7 @@ const EmailComposerInterface = ({ agent, onRun }) => {
               type="text"
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              placeholder="e.g., John Smith, CEO of TechCorp"
+              placeholder="e.g., Om Smith, CEO of TechCorp"
               className="w-full pl-10 pr-4 py-3 bg-[var(--surface)] border border-[var(--muted)] rounded-lg text-[var(--text)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
