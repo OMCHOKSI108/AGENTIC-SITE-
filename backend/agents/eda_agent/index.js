@@ -14,8 +14,15 @@ class EDAAgent {
         throw new Error('CSV file path is required');
       }
 
-      // Read and parse CSV
-      const data = await this.parseCSV(csv_upload);
+      // Read and parse CSV (handle both file path and CSV content)
+      let data;
+      if (fs.existsSync(csv_upload)) {
+        // It's a file path
+        data = await this.parseCSV(csv_upload);
+      } else {
+        // It's CSV content as string
+        data = await this.parseCSVContent(csv_upload);
+      }
 
       if (data.length === 0) {
         throw new Error('CSV file is empty or could not be parsed');
@@ -52,6 +59,24 @@ class EDAAgent {
       }
 
       fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => resolve(results))
+        .on('error', (error) => reject(error));
+    });
+  }
+
+  async parseCSVContent(csvContent) {
+    return new Promise((resolve, reject) => {
+      const results = [];
+      
+      // Convert CSV string to stream
+      const stream = require('stream');
+      const readable = new stream.Readable();
+      readable.push(csvContent);
+      readable.push(null);
+
+      readable
         .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', () => resolve(results))

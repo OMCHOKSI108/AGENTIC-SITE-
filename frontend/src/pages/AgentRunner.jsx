@@ -13,6 +13,17 @@ import CodeFixInterface from '../agents/interfaces/CodeFixInterface';
 import FinancialReportInterface from '../agents/interfaces/FinancialReportInterface';
 import CryptoSentimentInterface from '../agents/interfaces/CryptoSentimentInterface';
 import RegexGeneratorInterface from '../agents/interfaces/RegexGeneratorInterface';
+import CloudCostInterface from '../agents/interfaces/CloudCostInterface';
+import CICDInterface from '../agents/interfaces/CICDInterface';
+import LogAnomalyInterface from '../agents/interfaces/LogAnomalyInterface';
+import TerraformInterface from '../agents/interfaces/TerraformInterface';
+import TradingBacktesterInterface from '../agents/interfaces/TradingBacktesterInterface';
+import APIDocsInterface from '../agents/interfaces/APIDocsInterface';
+import ReadmeArchitectInterface from '../agents/interfaces/ReadmeArchitectInterface';
+import ContractAuditorInterface from '../agents/interfaces/ContractAuditorInterface';
+import MeetingScribeInterface from '../agents/interfaces/MeetingScribeInterface';
+import ResumeOptimizerInterface from '../agents/interfaces/ResumeOptimizerInterface';
+import EmailComposerInterface from '../agents/interfaces/EmailComposerInterface';
 import Button from '../components/ui/Button.jsx';
 import Loader from '../components/ui/Loader.jsx';
 import { useAgent, useRunAgent } from '../hooks/useAgentApi';
@@ -178,6 +189,61 @@ const AgentRunner = () => {
             />
           ) : agent.slug === 'regex_generator' ? (
             <RegexGeneratorInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'cloud_cost_agent' ? (
+            <CloudCostInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'cicd_agent' ? (
+            <CICDInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'log_anomaly_agent' ? (
+            <LogAnomalyInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'terraform_agent' ? (
+            <TerraformInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'trading_backtester' ? (
+            <TradingBacktesterInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'api_docs_agent' ? (
+            <APIDocsInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'readme_architect' ? (
+            <ReadmeArchitectInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'contract_auditor' ? (
+            <ContractAuditorInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'meet_scribe' ? (
+            <MeetingScribeInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'resume_opt' ? (
+            <ResumeOptimizerInterface
+              agent={agent}
+              onRun={handleRun}
+            />
+          ) : agent.slug === 'cold_outreach_agent' ? (
+            <EmailComposerInterface
               agent={agent}
               onRun={handleRun}
             />

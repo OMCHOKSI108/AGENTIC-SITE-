@@ -21,6 +21,15 @@ const testUsers = [
     password: "test123", // Plain text password - will be hashed by model
     isVerified: true,
     role: "user"
+  },
+  {
+    name: "Rahul",
+    email: "rahul@example.com",
+    username: "rahul",
+    number: "1111111111",
+    password: "rahul123", // Plain text password - will be hashed by model
+    isVerified: true,
+    role: "user"
   }
 ];
 

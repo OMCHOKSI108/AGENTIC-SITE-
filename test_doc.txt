@@ -1,0 +1,1 @@
+Machine learning is a subset of AI that enables computers to learn without being explicitly programmed. It uses algorithms and statistical models to analyze and draw inferences from patterns in data. Machine learning is widely used in applications such as image recognition, natural language processing, recommendation systems, and predictive analytics.

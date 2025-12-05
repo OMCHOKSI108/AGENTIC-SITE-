@@ -2,20 +2,21 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-async function run(input) {
-  const { contract_content } = input;
+class ContractAuditorAgent {
+  async run(input) {
+    const { contract_content } = input;
 
-  if (!contract_content) {
-    return {
-      success: false,
-      error: 'Please provide contract content to analyze'
-    };
-  }
+    if (!contract_content) {
+      return {
+        success: false,
+        error: 'Please provide contract content to analyze'
+      };
+    }
 
-  try {
-    const prompt = `Audit this legal contract for potentially problematic clauses, unfair terms, and areas of concern.
+    try {
+      const prompt = `Audit this legal contract for potentially problematic clauses, unfair terms, and areas of concern.
 
 CONTRACT CONTENT:
 ${contract_content}
@@ -50,24 +51,25 @@ Format as:
 ### Recommendations
 [Overall advice for handling this contract]`;
 
-    const result = await model.generateContent(prompt);
+      const result = await model.generateContent(prompt);
 
-    const audit = result.response.text().trim();
+      const audit = result.response.text().trim();
 
-    return {
-      success: true,
-      output: audit,
-      cost: 0.035,
-      time_ms: 3500
-    };
+      return {
+        success: true,
+        output: audit,
+        cost: 0.035,
+        time_ms: 3500
+      };
 
-  } catch (error) {
-    console.error('Legal Contract Auditor error:', error);
-    return {
-      success: false,
-      error: `Failed to audit contract: ${error.message}`
-    };
+    } catch (error) {
+      console.error('Legal Contract Auditor error:', error);
+      return {
+        success: false,
+        error: `Failed to audit contract: ${error.message}`
+      };
+    }
   }
 }
 
-module.exports = { run };
+module.exports = new ContractAuditorAgent();

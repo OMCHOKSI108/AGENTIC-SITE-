@@ -254,7 +254,7 @@ app.post('/users', (req, res) => {
                       className="flex items-center gap-2"
                     >
                       {copied ? <AiOutlineCheckCircle className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
-                      {copied ? 'Copied!' : 'Copied!' : 'Copy'}
+                      {copied ? 'Copied!' : 'Copy'}
                     </Button>
                   </div>
                   <pre className="text-sm text-gray-700 bg-gray-50 p-3 rounded whitespace-pre-wrap overflow-x-auto font-mono max-h-64 overflow-y-auto">{result.postman_collection}</pre>

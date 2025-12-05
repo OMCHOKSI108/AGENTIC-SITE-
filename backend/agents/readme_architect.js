@@ -2,20 +2,21 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-async function run(input) {
-  const { repo_url } = input;
+class ReadmeArchitectAgent {
+  async run(input) {
+    const { repo_url } = input;
 
-  if (!repo_url) {
-    return {
-      success: false,
-      error: 'Please provide a repository URL'
-    };
-  }
+    if (!repo_url) {
+      return {
+        success: false,
+        error: 'Please provide a repository URL'
+      };
+    }
 
-  try {
-    const prompt = `Generate a professional README.md file for this GitHub repository.
+    try {
+      const prompt = `Generate a professional README.md file for this GitHub repository.
 
 Repository URL: ${repo_url}
 
@@ -40,24 +41,25 @@ Analyze the repository type and tech stack to create appropriate content. Includ
 - License
 - Contact information`;
 
-    const result = await model.generateContent(prompt);
+      const result = await model.generateContent(prompt);
 
-    const readme = result.response.text().trim();
+      const readme = result.response.text().trim();
 
-    return {
-      success: true,
-      output: readme,
-      cost: 0.025,
-      time_ms: 2500
-    };
+      return {
+        success: true,
+        output: readme,
+        cost: 0.025,
+        time_ms: 2500
+      };
 
-  } catch (error) {
-    console.error('Readme Architect error:', error);
-    return {
-      success: false,
-      error: `Failed to generate README: ${error.message}`
-    };
+    } catch (error) {
+      console.error('Readme Architect error:', error);
+      return {
+        success: false,
+        error: `Failed to generate README: ${error.message}`
+      };
+    }
   }
 }
 
-module.exports = { run };
+module.exports = new ReadmeArchitectAgent();

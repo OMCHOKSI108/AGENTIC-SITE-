@@ -320,7 +320,7 @@ Return only the enhanced search query, no explanation.`;
 
       const completion = await groq.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "llama3-8b-8192",
+        model: "llama3-70b-8192",
         temperature: 0.3,
         max_tokens: 100,
       });
