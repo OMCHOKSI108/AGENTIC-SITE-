@@ -15,31 +15,41 @@ This AI agent platform covers the following key domains:
 - **Marketing & Sales**: Cold outreach email generation, personalized communication, sales automation
 - **Automation & Workflow**: n8n workflow generation, process automation, business workflow optimization
 
-## 🤖 Available AI Agents
+## 🤖 Available AI Agents (status)
 
-| Agent Name | Category | Description | Use Cases | Complexity |
-|------------|----------|-------------|-----------|------------|
-| **Cloud Cost Auditor** | DevOps | Analyze AWS/Azure billing CSVs to find idle resources and wasted spend with CLI fix commands | Cloud cost optimization, resource analysis, billing review | Medium |
-| **CI/CD Pipeline Generator** | DevOps | Generate GitHub Actions workflows for any tech stack with build, test, and deploy stages | Automated deployment, CI/CD setup, workflow generation | Medium |
-| **Log Anomaly Detective** | DevOps | Analyze server logs to detect anomalies, identify root causes, and suggest fixes | Log analysis, error detection, system monitoring | Medium |
-| **Terraform Architect** | DevOps | Generate production-ready Terraform code for cloud infrastructure with best practices | Infrastructure as code, cloud provisioning, IaC generation | High |
-| **Dockerizer Agent** | DevOps | Generate production-ready Dockerfiles and docker-compose.yml for any application | Containerization, deployment configuration, microservices setup | Medium |
-| **Trading Strategy Backtester** | Finance | Backtest trading strategies with historical data, calculate ROI, drawdown, and win rates | Trading analysis, strategy validation, risk assessment | High |
-| **Crypto Sentiment Scout** | Finance | Analyze news headlines and social media to gauge cryptocurrency market sentiment | Crypto trading, market analysis, sentiment tracking | Medium |
-| **Auto EDA (Exploratory Data Analysis)** | Data Science | Automated exploratory data analysis with interactive charts and data quality scoring | Data exploration, statistical analysis, visualization | High |
-| **Smart SQL Generator** | Data Science | Convert natural language questions to optimized SQL queries with explanations | Database querying, data extraction, query optimization | Medium |
-| **Financial Report Simplifier** | Finance | Extract key insights from earnings calls, 10-Ks, and financial reports | Financial analysis, report summarization, investment research | Medium |
-| **Code Doctor (Debugger + Security)** | Development | Debug code, fix bugs, and perform security vulnerability checks | Code review, debugging, security analysis | Medium |
-| **API Documentation Generator** | Development | Generate OpenAPI/Swagger specs and markdown documentation from code | API documentation, specification generation, developer tools | Medium |
-| **Readme.md Architect** | Development | Generate professional README files with badges, installation, and documentation | Project documentation, README generation, open source setup | Low |
-| **Regex Generator & Explainer** | Development | Create regular expressions with detailed explanations and test cases | Pattern matching, data validation, text processing | Low |
-| **Legal Contract Auditor** | Enterprise | Audit contracts for unfair clauses, non-standard terms, and negotiation points | Contract review, legal analysis, compliance checking | High |
-| **Cold Outreach Writer** | Marketing | Generate personalized cold emails by analyzing company websites and your offerings | Sales outreach, email marketing, personalization | Medium |
-| **Meeting Scribe (Voice Notes)** | Productivity | Transcribe audio recordings and extract action items, decisions, and summaries | Meeting notes, transcription, productivity tools | High |
-| **Resume ATS Optimizer** | Career | Optimize resumes for ATS systems and specific job descriptions | Job applications, resume optimization, career development | Medium |
-| **YouTube Lecture Finder** | Education | Find highly-rated educational videos and lecture segments for any topic | Learning resources, educational content discovery | Medium |
-| **Knowledge Base Chat (RAG)** | Enterprise | Upload documents and chat with an AI that only answers based on your files | Document Q&A, knowledge management, research assistance | High |
-| **n8n Architect & Auto-Debugger** | Automation | Generates valid, error-checked n8n workflows with autonomous validation and visual preview | Workflow automation, process automation, no-code solutions | High |
+The project includes 21 backend agents (see `backend/seedAgents.js`). The table below shows which agents currently have a dedicated frontend interface component in `frontend/src/agents/interfaces/` and the backend AI integration status.
+
+| Agent Name | Slug | Frontend Interface | Backend AI Integration |
+|---|---:|:---:|:---|
+| Cloud Cost Auditor | `cloud_cost_agent` | Missing (no dedicated interface) | Backend implemented (requires API keys)
+| CI/CD Pipeline Generator | `cicd_agent` | Missing | Backend implemented (requires API keys)
+| Log Anomaly Detective | `log_anomaly_agent` | Missing | Backend implemented (requires API keys)
+| Terraform Architect | `terraform_agent` | Missing | Backend implemented (requires API keys)
+| Dockerizer Agent | `dockerizer_agent` | Implemented (`DockerizerInterface.jsx`) | Backend implemented (LLM calls require API keys)
+| Trading Strategy Backtester | `trading_backtester` | Missing | Backend implemented (requires data & keys)
+| Crypto Sentiment Scout | `crypto_sentiment_agent` | Implemented (`CryptoSentimentInterface.jsx`) | Backend implemented (external APIs + LLM keys)
+| Auto EDA (Exploratory Data Analysis) | `eda_agent` | Implemented (`EDAAgentInterface.jsx`) | Backend implemented (async workers; requires libraries & keys)
+| Smart SQL Generator | `sql_generator` | Implemented (`SQLGeneratorInterface.jsx`) | Backend implemented (ephemeral; uses LLM)
+| Financial Report Simplifier | `financial_report_agent` | Implemented (`FinancialReportInterface.jsx`) | Backend implemented (PDF parsing + LLM)
+| Code Doctor (Debugger + Security) | `code_fix_agent` | Implemented (`CodeFixAgentInterface.jsx` / `CodeFixInterface.jsx`) | Backend implemented (sandboxed for some agents)
+| API Documentation Generator | `api_docs_agent` | Missing | Backend implemented (generates OpenAPI/Markdown)
+| Readme.md Architect | `readme_architect` | Missing | Backend implemented (README generation)
+| Regex Generator & Explainer | `regex_generator` | Implemented (`RegexGeneratorInterface.jsx`) | Backend implemented (LLM)
+| Legal Contract Auditor | `contract_auditor` | Missing | Backend implemented (document analysis + LLM)
+| Cold Outreach Writer | `cold_outreach_agent` | Implemented (`EmailComposerInterface.jsx`) | Backend implemented (LLM + web scraping optional)
+| Meeting Scribe (Voice Notes) | `meet_scribe` | Implemented (`MeetingScribeInterface.jsx`) | Backend implemented (speech-to-text + LLM)
+| Resume ATS Optimizer | `resume_opt` | Implemented (`ResumeOptimizerInterface.jsx`) | Backend implemented (LLM)
+| YouTube Lecture Finder | `youtube_finder` | Implemented (`YouTubeFinderInterface.jsx`) | Backend implemented (YouTube API + LLM)
+| Knowledge Base Chat (RAG) | `kb_agent` | Implemented (`KnowledgeBaseInterface.jsx`) | Backend implemented (embeddings + vector DB + LLM)
+| n8n Architect & Auto-Debugger | `n8n_architect` | Implemented (`WorkflowBuilderInterface.jsx`) | Backend implemented (workflow generation + validation)
+
+Notes:
+- "Implemented" means a dedicated React component exists in `frontend/src/agents/interfaces/` that provides a tailored UI. If an agent is marked "Missing", a backend agent definition exists but there is no dedicated frontend file — those agents fall back to the generic agent runner UI.
+- Backend AI Integration indicates the backend agent implementation exists under `backend/agents/` (seeded in `backend/seedAgents.js`) and will call configured LLMs or external APIs — you must set API keys in `backend/.env` for full functionality.
+
+If you'd like, I can:
+- create placeholder interface components for the missing 8 agents so each agent has a unique UI scaffold, or
+- implement full UIs and wire them to the backend one-by-one (I can propose an implementation order).
 
 ## 🏗️ Architecture
 

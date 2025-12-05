@@ -35,7 +35,7 @@ Create a new user account.
 {
   "name": "Om Choksi",
   "email": "Om@example.com",
-  "username": "Omdoe",
+  "username": "Om Choksi",
   "number": "1234567890", // optional
   "password": "password123"
 }
@@ -50,7 +50,7 @@ Create a new user account.
     "id": "user-id",
     "name": "Om Choksi",
     "email": "Om@example.com",
-    "username": "Omdoe",
+    "username": "Om Choksi",
     "number": "1234567890"
   }
 }
@@ -62,7 +62,7 @@ Login with username or email.
 **Request Body:**
 ```json
 {
-  "identifier": "Omdoe", // or email
+  "identifier": "Om Choksi", // or email
   "password": "password123"
 }
 ```
@@ -97,7 +97,7 @@ Authorization: Bearer jwt-token-here
     "id": "user-id",
     "name": "Om Choksi",
     "email": "Om@example.com",
-    "username": "Omdoe",
+    "username": "Om Choksi",
     "number": "1234567890",
     "createdAt": "2025-12-04T00:00:00.000Z"
   }
